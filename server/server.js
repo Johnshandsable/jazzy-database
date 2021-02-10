@@ -1,18 +1,18 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+// const pool = require('./modules/pool');
 
-const pg = require('pg');
-const pool = new pg.Pool({
-  database: 'jazzy_sql',
-  host: 'localhost',
-  port: 5432,
-});
+const songRouter = require('./routers/song.router');
+const artistRouter = require('./routers/artist.router');
 
 const app = express();
 const PORT = 5000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('server/public'));
+
+app.use('/api', songRouter);
+app.use('/api', artistRouter);
 
 app.listen(PORT, () => {
   console.log('listening on port', PORT);
@@ -54,66 +54,3 @@ const songList = [
     released: '2012-02-01',
   },
 ];
-
-app.get('/artist', (req, res) => {
-  pool
-    .query('SELECT * FROM "artist"')
-    .then(function (dbResults) {
-      console.log(dbResults.rows);
-      res.send(dbResults.rows);
-    })
-    .catch(function (error) {
-      console.log(error);
-      res.sendStatus(500);
-    });
-});
-
-app.post('/artist', (req, res) => {
-  console.log(req.body);
-  pool
-    .query(
-      `INSERT INTO "artist"
-            ("name", "birthdate")
-            VALUES 
-            ('${req.body.name}', '${req.body.birthdate}')`
-    )
-    .then(function (dbResults) {
-      console.log(dbResults.rows);
-      res.send(dbResults.rows);
-    })
-    .catch(function (error) {
-      console.log(error);
-      res.sendStatus(500);
-    });
-});
-
-app.get('/song', (req, res) => {
-  pool
-    .query('SELECT * FROM "song"')
-    .then(function (dbResults) {
-      console.log(dbResults.rows);
-      res.send(dbResults.rows);
-    })
-    .catch(function (error) {
-      console.log(error);
-      res.sendStatus(500);
-    });
-});
-
-app.post('/song', (req, res) => {
-  pool
-    .query(
-      `INSERT INTO "song"
-            ("title", "length", "released")
-            VALUES 
-            ('${req.body.title}', '${req.body.length}', '${req.body.released}')`
-    )
-    .then(function (dbResults) {
-      console.log(dbResults.rows);
-      res.send(dbResults.rows);
-    })
-    .catch(function (error) {
-      console.log(error);
-      res.sendStatus(500);
-    });
-});
