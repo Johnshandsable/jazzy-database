@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('./modules/pool');
+const pool = require('../modules/pool');
 
-router.get('/song', (req, res) => {
+router.get('/artist', (req, res) => {
   pool
-    .query('SELECT * FROM "song"')
+    .query('SELECT * FROM "artist"')
     .then(function (dbResults) {
       console.log(dbResults.rows);
       res.send(dbResults.rows);
@@ -15,13 +15,14 @@ router.get('/song', (req, res) => {
     });
 });
 
-router.post('/song', (req, res) => {
+router.post('/artist', (req, res) => {
+  console.log(req.body);
   pool
     .query(
-      `INSERT INTO "song"
-            ("title", "length", "released")
+      `INSERT INTO "artist"
+            ("name", "birthdate")
             VALUES 
-            ('${req.body.title}', '${req.body.length}', '${req.body.released}')`
+            ('${req.body.name}', '${req.body.birthdate}')`
     )
     .then(function (dbResults) {
       console.log(dbResults.rows);

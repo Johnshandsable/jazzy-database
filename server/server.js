@@ -11,8 +11,8 @@ const PORT = 5000;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('server/public'));
 
-app.use('/api', songRouter);
-app.use('/api', artistRouter);
+app.use('/', songRouter);
+app.use('/', artistRouter);
 
 app.listen(PORT, () => {
   console.log('listening on port', PORT);
